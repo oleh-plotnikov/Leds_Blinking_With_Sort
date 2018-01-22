@@ -42,6 +42,7 @@
 #include "UL/ulLedCtrl.h"
 #include "UL/ulButton.h"
 #include "DL/SysTickDrv.h"
+#include "DL/UartDrv.h"
 
 /* Private function prototypes -----------------------------------------------*/
 void Periphery_Init(void);

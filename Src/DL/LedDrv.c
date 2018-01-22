@@ -12,7 +12,6 @@ void LedDrv_Pin_Init(LedDrv_Param_T ledDrvStruct)
 	 GPIO_InitTypeDef GPIO_InitStruct;
 
 	 __HAL_RCC_GPIOD_CLK_ENABLE();
-	 HAL_GPIO_WritePin(ledDrvStruct.gpio_port, ledDrvStruct.gpio_pin, GPIO_PIN_RESET);
 
 	 GPIO_InitStruct.Pin = ledDrvStruct.gpio_pin;
 	 GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;

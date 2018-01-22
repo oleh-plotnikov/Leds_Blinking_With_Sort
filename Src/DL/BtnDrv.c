@@ -9,7 +9,8 @@
 
 static BOOL BtnDrv_CheckDebouceBtn(BtnDrv_Param_T btnDrvStruct);
 
-void BtnDrv_Init(BtnDrv_Param_T btnDrvStruct){
+void BtnDrv_Init(BtnDrv_Param_T btnDrvStruct)
+{
 	 GPIO_InitTypeDef GPIO_InitStruct;
 
 	  __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -19,11 +20,13 @@ void BtnDrv_Init(BtnDrv_Param_T btnDrvStruct){
 	  HAL_GPIO_Init(btnDrvStruct.gpio_port, &GPIO_InitStruct);
 }
 
-BOOL BtnDrv_Is_Pressed(BtnDrv_Param_T btnDrvStruct){
+BOOL BtnDrv_Is_Pressed(BtnDrv_Param_T btnDrvStruct)
+{
 	return BtnDrv_CheckDebouceBtn(btnDrvStruct);
 }
 
-static BOOL BtnDrv_CheckDebouceBtn(BtnDrv_Param_T btnDrvStruct){
+static BOOL BtnDrv_CheckDebouceBtn(BtnDrv_Param_T btnDrvStruct)
+{
 	uint8_t 	result 	 = 0;
 	uint16_t	btncount = 0;
 
