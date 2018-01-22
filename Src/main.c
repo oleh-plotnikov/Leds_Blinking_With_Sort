@@ -62,6 +62,7 @@ int main(void)
 		{
 			period = ulButton_ReadPeriod();
 			ulLedCtrl_SetPeriod(period);
+			ulLedCtrl_SetPeriod(period);
 		}
 	}
 }
