@@ -1,4 +1,0 @@
-ulLedCtrl.c:99:12:comp	0	static
-ulLedCtrl.c:21:6:ulLedCtrl_Init	32	static
-ulLedCtrl.c:52:9:ulLedCtrl_Run	24	static
-ulLedCtrl.c:89:6:ulLedCtrl_SetPeriod	4	static

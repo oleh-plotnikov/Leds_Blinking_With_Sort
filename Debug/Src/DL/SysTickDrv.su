@@ -1,3 +1,0 @@
-SysTickDrv.c:14:6:SysTickDrv_Init	0	static
-SysTickDrv.c:19:10:SysTickDrv_GetTime	0	static
-SysTickDrv.c:25:6:SysTickDrv_IsTimePassed	16	static

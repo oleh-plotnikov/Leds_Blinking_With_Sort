@@ -1,4 +1,0 @@
-ulButton.c:33:6:ulButton_Init	8	static
-ulButton.c:45:6:ulButton_NewPeriodDetected	0	static
-ulButton.c:61:10:ulButton_ReadPeriod	0	static
-ulButton.c:67:9:ulButton_Run	16	static

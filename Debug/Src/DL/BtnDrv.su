@@ -1,2 +1,0 @@
-BtnDrv.c:12:6:BtnDrv_Init	40	static
-BtnDrv.c:22:6:BtnDrv_Is_Pressed	24	static
