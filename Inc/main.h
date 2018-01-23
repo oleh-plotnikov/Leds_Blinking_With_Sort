@@ -9,7 +9,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * COPYRIGHT(c) 2017 STMicroelectronics
+  * COPYRIGHT(c) 2018 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -38,16 +38,15 @@
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __MAIN_H
 #define __MAIN_H
+  /* Includes ------------------------------------------------------------------*/
+
 /* Includes ------------------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
 #include "stdint.h"
+#include "string.h"
+/* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
-typedef uint8_t BOOL;
-
-#define LED_ON	GPIO_PIN_SET
-#define LED_OFF	GPIO_PIN_RESET
-#define TRUE	((uint8_t) 1)
-#define FALSE	((uint8_t) 0)
 
 #define BTN_Pin GPIO_PIN_0
 #define BTN_GPIO_Port GPIOA
@@ -68,7 +67,12 @@ typedef uint8_t BOOL;
 /* #define USE_FULL_ASSERT    1U */
 
 /* USER CODE BEGIN Private defines */
+typedef uint8_t BOOL;
 
+#define LED_ON	GPIO_PIN_SET
+#define LED_OFF	GPIO_PIN_RESET
+#define TRUE	((uint8_t) 1)
+#define FALSE	((uint8_t) 0)
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

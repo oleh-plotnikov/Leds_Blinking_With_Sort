@@ -3,7 +3,7 @@
 #include "UL/ulLedCtrl.h"
 #include <stdlib.h>
 
-#define DEFAULT_PERIOD 10000
+#define DEFAULT_PERIOD 5000
 
 typedef struct{
 	leds_t	 		Led_Pins;
@@ -49,16 +49,9 @@ void ulLedCtrl_Init(void)
 }
 
 
-ERROR_T ulLedCtrl_Run(uint16_t* period)
+ERROR_T ulLedCtrl_Run()
 {
 	ERROR_T error_status = ERROR_SUCCESS;
-
-	if(period == NULL){
-		error_status = ERROR_NULL;
-	}
-
-	if(*period > 0)
-		ulLedCtrl_SetPeriod(*period);
 
 	static int i=0;
 

@@ -9,8 +9,8 @@
 #include "Utils/utils.h"
 #include "UL/ulButton.h"
 
-#define MIN_PRESSED_PERIOD 1000
-#define MAX_PRESSED_PERIOD 10000
+#define MIN_PRESSED_PERIOD 100
+#define MAX_PRESSED_PERIOD 5000
 
 typedef enum{
 	RELEASED = 0,
