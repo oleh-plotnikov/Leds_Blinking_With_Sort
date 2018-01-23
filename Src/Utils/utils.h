@@ -8,6 +8,8 @@
 #ifndef UTILS_UTILS_H_
 #define UTILS_UTILS_H_
 
+#include "stdint.h"
+
 typedef enum {
 	ERROR_SUCCESS 	= 0,
 	ERROR_NULL 		= 1,
