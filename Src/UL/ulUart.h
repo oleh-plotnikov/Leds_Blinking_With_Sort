@@ -11,5 +11,8 @@
 #include "Utils/utils.h"
 
 ERROR_T ulUart_Init();
+ERROR_T ulUart_SendMessage();
+ERROR_T ulUart_ReadMessage(char* msg, uint16_t len);
+ERROR_T ulUart_Run();
 
 #endif /* UL_ULUART_H_ */

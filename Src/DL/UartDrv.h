@@ -22,6 +22,8 @@ extern void _Error_Handler(char *, int);
 
 void UartDrv_Run(void);
 void UartDrv_Init(void);
+int16_t UartDrv_Write(UART_HandleTypeDef* uartHandle, char* str);
+uint16_t UartDrv_Read(UART_HandleTypeDef* uartHandle, uint8_t* msg, uint16_t len);
 
 /* USER CODE BEGIN Prototypes */
 

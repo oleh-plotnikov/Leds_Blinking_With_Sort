@@ -13,7 +13,8 @@
 typedef enum {
 	ERROR_SUCCESS 	= 0,
 	ERROR_NULL 		= 1,
-	ERROR_BADSTATE 	= 2
+	ERROR_BADSTATE 	= 2,
+	ERROR_EMPTYMSG
 }ERROR_T;
 
 uint32_t GetSysTickInterval(uint32_t first_time, uint32_t second_time);
