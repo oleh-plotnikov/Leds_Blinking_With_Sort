@@ -10,13 +10,11 @@ uint16_t UartDrv_Read(UART_HandleTypeDef* uartHandle, uint8_t* msg, uint16_t len
 
 }
 
-int16_t UartDrv_Write(UART_HandleTypeDef* uartHandle, char* str)
+int16_t UartDrv_Write(UART_HandleTypeDef* uartHandle, char* str, uint16_t len)
 {
 	int16_t count = 0;
 
-	int strcount = strlen(str);
-
-	HAL_UART_Transmit_IT(uartHandle, (uint8_t*)str, strcount);
+	HAL_UART_Transmit_IT(uartHandle, (uint8_t*)str, len);
 
 	return count;
 
@@ -61,7 +59,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
   }
 }
 
-void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
+void UartDrv_DeInit(UART_HandleTypeDef* uartHandle)
 {
 
   if(uartHandle->Instance==USART2)

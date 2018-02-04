@@ -7,13 +7,16 @@
 #include "DL/SysTickDrv.h"
 #include "DL/UartDrv.h"
 
+
 void Periphery_Init(void);
+
+
 int main(void)
 {
+	uint16_t period;
 
 	Periphery_Init();
-	uint16_t period;
-	ulUart_SendMessage("Program run\n\r");
+	ulUart_SendMessage("\nProgram run\n\r", 14);
 
 
   while (1)
@@ -22,12 +25,10 @@ int main(void)
 
 	  ulLedCtrl_Run();
 	  ulButton_Run();
-	  //UartDrv_Run();
 	  ulUart_Run();
 
 	  if(ulButton_NewPeriodDetected())
 	  {
-		  ulUart_SendMessage("Period was changed\n\r");
 		  period = ulButton_ReadPeriod();
 		  ulLedCtrl_SetPeriod(period);
 	  }
