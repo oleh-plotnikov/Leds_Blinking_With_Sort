@@ -7,6 +7,8 @@
 
 #include "ulUart.h"
 #include "DL/UartDrv.h"
+#include "stdlib.h"
+#include "ctype.h"
 
 #define MAXLENRX 19
 #define MAXLENTX 19
@@ -19,6 +21,14 @@ static char rxBuffer[MAXLENRX];
 UART_HandleTypeDef huart2;
 BOOL UartReady;
 BOOL NewDataReady;
+
+typedef struct{
+	char 		cmd[32];
+	uint16_t 	num;
+}msg_t;
+
+msg_t message;
+
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
@@ -88,16 +98,31 @@ static BOOL ulUart_ParseMsg(void)
 
 	volatile uint16_t i = 0;
 
-	char cmd[] = "change period 1000\n";
+	char cmd[] = "change period";
+
+	uint16_t cmdlen = strlen(cmd);
+
 	while (i < MAXLENTX)
 	{
 		if(rxBuffer[i] == 'c')
 		{
-			int rescmp = strcmp(rxBuffer, cmd);
+			int rescmp = strncmp(rxBuffer, cmd, cmdlen);
 			if(rescmp == RESET)
 			{
+				i = cmdlen;
+				while((!isdigit(rxBuffer[i])))
+				{
+					if('\n' == rxBuffer[i])
+						break;
+					i++;
+				}
+				if('\n' == rxBuffer[i])
+						break;
+
+				message.num = atoi((char*)&rxBuffer[i]);
 				status = SET;
 				break;
+
 			}else
 			{
 				i++;
@@ -111,7 +136,6 @@ static BOOL ulUart_ParseMsg(void)
 
 ERROR_T ulUart_Run()
 {
-
 	if(SET == UartReady)
 	{
 		if(SET == NewDataReady)
@@ -119,7 +143,6 @@ ERROR_T ulUart_Run()
 			if(ulUart_ParseMsg())
 				ulUart_SendMessage(rxBuffer, (uint16_t)MAXLENRX);
 		}
-
 		ulUart_ReadMessage(rxBuffer, (uint16_t)MAXLENRX);
 	}
 
