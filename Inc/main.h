@@ -45,7 +45,6 @@
 #include "stdint.h"
 #include "string.h"
 /* USER CODE END Includes */
-
 /* Private define ------------------------------------------------------------*/
 
 #define BTN_Pin GPIO_PIN_0
