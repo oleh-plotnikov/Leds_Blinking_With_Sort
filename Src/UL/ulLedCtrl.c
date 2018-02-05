@@ -8,7 +8,7 @@
 typedef struct{
 	leds_t	 		Led_Pins;
 	LedDrv_Param_T 	Led_DrvPin;
-	uint32_t 		Led_Period;
+	uint16_t 		Led_Period;
 	uint32_t 		Led_State;
 	uint32_t 		Led_Time;
 }ulLedCtrl_params_t;

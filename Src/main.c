@@ -32,6 +32,11 @@ int main(void)
 		  period = ulButton_ReadPeriod();
 		  ulLedCtrl_SetPeriod(period);
 	  }
+	  if(ulUart_NewPeriodDetected())
+	  {
+		  period = ulUart_ReadPeriod();
+  		  ulLedCtrl_SetPeriod(period);
+	  }
   }
 }
 

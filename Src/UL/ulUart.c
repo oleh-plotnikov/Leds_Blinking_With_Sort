@@ -12,6 +12,8 @@
 
 #define MAXLENRX 19
 #define MAXLENTX 19
+#define MIN_PERIOD 100
+#define MAX_PERIOD 5000
 
 static BOOL ulUart_ParseMsg(void);
 
@@ -21,6 +23,7 @@ static char rxBuffer[MAXLENRX];
 UART_HandleTypeDef huart2;
 BOOL UartReady;
 BOOL NewDataReady;
+BOOL NewPeriodReady;
 
 typedef struct{
 	char 		cmd[32];
@@ -53,6 +56,7 @@ ERROR_T ulUart_Init()
 
 	NewDataReady = RESET;
 	UartReady = SET;
+	NewPeriodReady = RESET;
 
 	return error_status;
 }
@@ -102,35 +106,35 @@ static BOOL ulUart_ParseMsg(void)
 
 	uint16_t cmdlen = strlen(cmd);
 
-	while (i < MAXLENTX)
+	int rescmp = strncmp(rxBuffer, cmd, cmdlen);
+
+	if(rescmp == RESET)
 	{
-		if(rxBuffer[i] == 'c')
-		{
-			int rescmp = strncmp(rxBuffer, cmd, cmdlen);
-			if(rescmp == RESET)
-			{
-				i = cmdlen;
-				while((!isdigit(rxBuffer[i])))
-				{
-					if('\n' == rxBuffer[i])
-						break;
-					i++;
-				}
-				if('\n' == rxBuffer[i])
-						break;
-
-				message.num = atoi((char*)&rxBuffer[i]);
-				status = SET;
-				break;
-
-			}else
-			{
-				i++;
-			}
-		}
+		i = cmdlen;
+		if(RESET !=(message.num = atoi((char*)&rxBuffer[i])))
+			status = SET;
 	}
 
 	return status;
+}
+
+
+BOOL ulUart_NewPeriodDetected(void)
+{
+	BOOL status = RESET;
+	if(NewPeriodReady)
+		if(message.num >= MIN_PERIOD && message.num <= MAX_PERIOD)
+		{
+			status = SET;
+			NewPeriodReady = RESET;
+		}
+
+	return status;
+}
+
+uint16_t ulUart_ReadPeriod(void)
+{
+	return message.num;
 }
 
 
@@ -141,7 +145,10 @@ ERROR_T ulUart_Run()
 		if(SET == NewDataReady)
 		{
 			if(ulUart_ParseMsg())
-				ulUart_SendMessage(rxBuffer, (uint16_t)MAXLENRX);
+			{
+				NewDataReady = RESET;
+				NewPeriodReady = SET;
+			}
 		}
 		ulUart_ReadMessage(rxBuffer, (uint16_t)MAXLENRX);
 	}
