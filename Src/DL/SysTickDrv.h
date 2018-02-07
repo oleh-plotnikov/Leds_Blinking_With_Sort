@@ -1,10 +1,7 @@
 /*
  * SysTickDrv.h
  *
- *  Created on: Jul 3, 2016
- *      Author: Bogdan
  */
-
 #ifndef DL_SYSTICKDRV_H_
 #define DL_SYSTICKDRV_H_
 

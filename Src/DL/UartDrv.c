@@ -1,41 +1,45 @@
+/*
+ * UartDrv.c
+ *
+ */
 #include "DL/UartDrv.h"
 
-uint16_t UartDrv_Read(UART_HandleTypeDef* uartHandle, uint8_t* msg, uint16_t len)
+ERROR_T UartDrv_Read(UART_HandleTypeDef* uartHandle, uint8_t* msg, uint16_t len)
 {
-	uint16_t count = 0;
+	ERROR_T status = ERROR_SUCCESS;
+	if(HAL_OK != HAL_UART_Receive_IT(uartHandle, (uint8_t*)msg, len))
+		status = ERROR_UART;
 
-	HAL_UART_Receive_IT(uartHandle, (uint8_t*)msg, len);
-
-	return count;
-
+	return status;
 }
 
-int16_t UartDrv_Write(UART_HandleTypeDef* uartHandle, char* str, uint16_t len)
+ERROR_T UartDrv_Write(UART_HandleTypeDef* uartHandle, char* str, uint16_t len)
 {
-	int16_t count = 0;
+	ERROR_T status = ERROR_SUCCESS;
 
-	HAL_UART_Transmit_IT(uartHandle, (uint8_t*)str, len);
+	if(HAL_OK != HAL_UART_Transmit_IT(uartHandle, (uint8_t*)str, len))
+		status = ERROR_UART;
 
-	return count;
-
+	return status;
 }
 
-void UartDrv_Init(void)
+ERROR_T UartDrv_Init(UART_HandleTypeDef* huart)
 {
+	ERROR_T status = ERROR_SUCCESS;
 
-  huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
-  huart2.Init.WordLength = UART_WORDLENGTH_8B;
-  huart2.Init.StopBits = UART_STOPBITS_1;
-  huart2.Init.Parity = UART_PARITY_NONE;
-  huart2.Init.Mode = UART_MODE_TX_RX;
-  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart2) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
+	huart->Instance = USART2;
+	huart->Init.BaudRate = 115200;
+	huart->Init.WordLength = UART_WORDLENGTH_8B;
+	huart->Init.StopBits = UART_STOPBITS_1;
+	huart->Init.Parity = UART_PARITY_NONE;
+	huart->Init.Mode = UART_MODE_TX_RX;
+	huart->Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	huart->Init.OverSampling = UART_OVERSAMPLING_16;
 
+	if (HAL_OK != HAL_UART_Init(huart))
+		status = ERROR_UART;
+
+	return status;
 }
 
 
@@ -59,16 +63,30 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
   }
 }
 
-void UartDrv_DeInit(UART_HandleTypeDef* uartHandle)
+ERROR_T UartDrv_DeInit(UART_HandleTypeDef* uartHandle)
 {
+	ERROR_T status = ERROR_SUCCESS;
 
-  if(uartHandle->Instance==USART2)
-  {
-    __HAL_RCC_USART2_CLK_DISABLE();
+	if (NULL == uartHandle)
+		status = ERROR_NULL;
 
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_2|GPIO_PIN_3);
+	if(uartHandle->Instance==USART2)
+	{
+		__HAL_RCC_USART2_CLK_DISABLE();
+		HAL_GPIO_DeInit(GPIOA, GPIO_PIN_2|GPIO_PIN_3);
+		HAL_NVIC_DisableIRQ(USART2_IRQn);
+	}
 
-    HAL_NVIC_DisableIRQ(USART2_IRQn);
-  }
+	return status;
 }
 
+ERROR_T UartDrv_IRQHandler(UART_HandleTypeDef* uartHandle)
+{
+	ERROR_T status = ERROR_SUCCESS;
+
+	if (NULL == uartHandle)
+		status = ERROR_NULL;
+
+	HAL_UART_IRQHandler(uartHandle);
+	return status;
+}

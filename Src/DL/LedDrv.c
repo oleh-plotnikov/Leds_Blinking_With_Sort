@@ -1,11 +1,8 @@
 /*
  * LedDrv.c
  *
- *  Created on: 20.
- *      Author: oleh.plotnikov
  */
 #include "LedDrv.h"
-
 
 void LedDrv_Pin_Init(LedDrv_Param_T ledDrvStruct)
 {

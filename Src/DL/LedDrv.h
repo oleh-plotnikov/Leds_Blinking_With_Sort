@@ -1,10 +1,7 @@
 /*
  * LedDrv.h
  *
- *  Created on: 2017.
- *      Author: oleh.plotnikov
  */
-
 #ifndef DL_LEDDRV_H_
 #define DL_LEDDRV_H_
 

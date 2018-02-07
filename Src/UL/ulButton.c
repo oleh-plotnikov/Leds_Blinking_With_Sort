@@ -1,31 +1,20 @@
 /*
  * ulBtnRead.c
  *
- *  Created on: 20 ????. 2017 ?.
- *      Author: oleh.plotnikov
  */
 #include "DL/BtnDrv.h"
 #include "DL/SysTickDrv.h"
 #include "Utils/utils.h"
 #include "UL/ulButton.h"
 
-#define MIN_PRESSED_PERIOD 100
-#define MAX_PRESSED_PERIOD 5000
-
-typedef enum{
-	RELEASED = 0,
-	PRESSED  = 1
-}ulButton_btnstate_t;
-
 typedef struct{
 	BtnDrv_Param_T 		Btn_DrvPin;
 	uint32_t 			Curr_Press_Time;
 	uint32_t 			Curr_Release_Time;
 	uint32_t			Period;
-	BOOL				New_Period;
+	BOOL				IsNewPeriod;
 	ulButton_btnstate_t State_Btn;
 }ulButton_params_t;
-
 
 ulButton_params_t button_params;
 
@@ -44,17 +33,17 @@ void ulButton_Init(void)
 
 BOOL ulButton_NewPeriodDetected(void)
 {
-	BOOL status = FALSE;
+	BOOL period_status = FALSE;
 	uint32_t period = ulButton_ReadPeriod();
 
-	if(TRUE == button_params.New_Period)
+	if(button_params.IsNewPeriod)
 		if(MIN_PRESSED_PERIOD <= period && MAX_PRESSED_PERIOD >= period)
-			{
-				status = TRUE;
-				button_params.New_Period = FALSE;
-			}
+		{
+			period_status = TRUE;
+			button_params.IsNewPeriod = FALSE;
+		}
 
-	return status;
+	return period_status;
 }
 
 
@@ -84,7 +73,7 @@ ERROR_T ulButton_Run(void)
 							button_params.Curr_Release_Time = SysTickDrv_GetTime();
 							button_params.State_Btn = RELEASED;
 							button_params.Period = GetSysTickInterval(button_params.Curr_Press_Time, button_params.Curr_Release_Time);
-							button_params.New_Period = TRUE;
+							button_params.IsNewPeriod = TRUE;
 						}
 						break;
 		default:

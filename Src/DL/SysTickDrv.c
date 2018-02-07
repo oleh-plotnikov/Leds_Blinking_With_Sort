@@ -1,11 +1,7 @@
 /*
  * SysTickDrv.c
  *
- *  Created on: Jul 3, 2016
- *      Author: Bogdan
  */
-
-
 #include "SysTickDrv.h"
 
 static uint8_t	isInit = 0;

@@ -1,14 +1,13 @@
 /*
- * ulLedToggle.h
+ * ulLedCtrl.h
  *
- *  Created on: 20 ????. 2017 ?.
- *      Author: oleh.plotnikov
  */
 #ifndef UL_ULLEDCTRL_H_
 #define UL_ULLEDCTRL_H_
 
 #include "Utils/utils.h"
 
+#define DEFAULT_PERIOD 5000
 
 typedef enum{
 	R_LED = 0,

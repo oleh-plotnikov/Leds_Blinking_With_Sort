@@ -1,9 +1,11 @@
+/*
+ * ulLedCtrl.c
+ *
+ */
 #include "DL/LedDrv.h"
 #include "DL/SysTickDrv.h"
 #include "UL/ulLedCtrl.h"
 #include <stdlib.h>
-
-#define DEFAULT_PERIOD 5000
 
 typedef struct{
 	leds_t	 		Led_Pins;
@@ -14,9 +16,9 @@ typedef struct{
 }ulLedCtrl_params_t;
 
 static int comp (const void * elem1, const void * elem2);
-static void ulLedCtrl_Sort_Periods();
+static void ulLedCtrl_Sort_Periods(void);
 
-static ulLedCtrl_params_t 	leds_params  [NUMBERS_LED];
+static ulLedCtrl_params_t leds_params[NUMBERS_LED];
 
 void ulLedCtrl_Init(void)
 {
@@ -25,15 +27,12 @@ void ulLedCtrl_Init(void)
 	led = R_LED;
 	leds_params[led].Led_DrvPin.gpio_pin = R_LED_Pin;
 	leds_params[led].Led_DrvPin.gpio_port = R_LED_GPIO_Port;
-
 	led = G_LED;
 	leds_params[led].Led_DrvPin.gpio_pin = G_LED_Pin;
 	leds_params[led].Led_DrvPin.gpio_port = G_LED_GPIO_Port;
-
 	led = B_LED;
 	leds_params[led].Led_DrvPin.gpio_pin = B_LED_Pin;
 	leds_params[led].Led_DrvPin.gpio_port = B_LED_GPIO_Port;
-
 	led = O_LED;
 	leds_params[led].Led_DrvPin.gpio_pin = O_LED_Pin;
 	leds_params[led].Led_DrvPin.gpio_port = O_LED_GPIO_Port;
@@ -52,7 +51,6 @@ void ulLedCtrl_Init(void)
 ERROR_T ulLedCtrl_Run()
 {
 	ERROR_T error_status = ERROR_SUCCESS;
-
 	static int i=0;
 
 	if(SysTickDrv_IsTimePassed(leds_params[i].Led_Time, leds_params[i].Led_Period))
@@ -70,6 +68,7 @@ ERROR_T ulLedCtrl_Run()
 
 		leds_params[i].Led_Time = SysTickDrv_GetTime();
 	}
+
 	i++;
 	if (i>=NUMBERS_LED)
 	{
@@ -85,11 +84,11 @@ void ulLedCtrl_SetPeriod(uint16_t period)
 	ulLedCtrl_Sort_Periods();
 }
 
-static void ulLedCtrl_Sort_Periods(){
+static void ulLedCtrl_Sort_Periods(void){
 	qsort(&leds_params, NUMBERS_LED, sizeof(ulLedCtrl_params_t), comp);
 }
 
-static int comp (const void * elem1, const void * elem2)
+static int comp(const void * elem1, const void * elem2)
 {
     return ((ulLedCtrl_params_t*)elem1)->Led_Period - ((ulLedCtrl_params_t*)elem2)->Led_Period;
 }

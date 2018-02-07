@@ -1,23 +1,21 @@
 /*
  * BtnDrv.c
  *
- *  Created on: 27 ????. 2017 ?.
- *      Author: oleh.plotnikov
  */
-
 #include "BtnDrv.h"
 
 static BOOL BtnDrv_CheckDebouceBtn(BtnDrv_Param_T btnDrvStruct);
 
 void BtnDrv_Init(BtnDrv_Param_T btnDrvStruct)
 {
-	 GPIO_InitTypeDef GPIO_InitStruct;
+	GPIO_InitTypeDef GPIO_InitStruct;
 
-	  __HAL_RCC_GPIOA_CLK_ENABLE();
-	  GPIO_InitStruct.Pin = btnDrvStruct.gpio_pin;
-	  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	  GPIO_InitStruct.Pull = GPIO_NOPULL;
-	  HAL_GPIO_Init(btnDrvStruct.gpio_port, &GPIO_InitStruct);
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	GPIO_InitStruct.Pin = btnDrvStruct.gpio_pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+
+	HAL_GPIO_Init(btnDrvStruct.gpio_port, &GPIO_InitStruct);
 }
 
 BOOL BtnDrv_Is_Pressed(BtnDrv_Param_T btnDrvStruct)

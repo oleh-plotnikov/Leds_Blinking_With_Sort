@@ -1,10 +1,7 @@
 /*
  * BtnDrv.h
  *
- *  Created on: 27 ????. 2017 ?.
- *      Author: oleh.plotnikov
  */
-
 #ifndef DL_BTNDRV_H_
 #define DL_BTNDRV_H_
 

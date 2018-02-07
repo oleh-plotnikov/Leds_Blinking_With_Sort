@@ -1,8 +1,6 @@
 /*
  * ulUart.c
  *
- *  Created on: 22 ???. 2018 ?.
- *      Author: oleh.plotnikov
  */
 
 #include "ulUart.h"
@@ -10,38 +8,37 @@
 #include "stdlib.h"
 #include "ctype.h"
 
-#define MAXLENRX 19
-#define MAXLENTX 19
-#define MIN_PERIOD 100
-#define MAX_PERIOD 5000
-
 static BOOL ulUart_ParseMsg(void);
 
-static char rxBuffer[MAXLENRX];
-//static char txBuffer[MAXLENTX];
-
-UART_HandleTypeDef huart2;
-BOOL UartReady;
-BOOL NewDataReady;
-BOOL NewPeriodReady;
+char rxBuffer[MAXLENRX];
+char txBuffer[MAXLENTX];
 
 typedef struct{
-	char 		cmd[32];
+	char 		cmd[CMDLENTH];
 	uint16_t 	num;
 }msg_t;
 
-msg_t message;
+typedef struct{
+	msg_t message;
+	UART_HandleTypeDef huart;
+	BOOL UartReady;
+	BOOL NewDataReady;
+	BOOL NewPeriodReady;
+	char* rxBuffer;
+	char* txBuffer;
+}UART_ConfigTypedef;
 
+UART_ConfigTypedef UartInst;
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
-	UartReady = SET;
+	UartInst.UartReady = SET;
 }
 
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	NewDataReady = SET;
+	UartInst.NewDataReady = SET;
 }
 
 
@@ -49,14 +46,14 @@ ERROR_T ulUart_Init()
 {
 
 	ERROR_T error_status = ERROR_SUCCESS;
-	UartDrv_Init();
+	UartDrv_Init(&UartInst.huart);
 
-	__HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
-	__HAL_UART_ENABLE_IT(&huart2, UART_IT_TC);
+	__HAL_UART_ENABLE_IT(&UartInst.huart, UART_IT_RXNE);
+	__HAL_UART_ENABLE_IT(&UartInst.huart, UART_IT_TC);
 
-	NewDataReady = RESET;
-	UartReady = SET;
-	NewPeriodReady = RESET;
+	UartInst.NewDataReady = RESET;
+	UartInst.UartReady = SET;
+	UartInst.NewPeriodReady = RESET;
 
 	return error_status;
 }
@@ -69,11 +66,11 @@ ERROR_T ulUart_SendMessage(char* msg, uint16_t len)
 	if(NULL == msg)
 		error_status = ERROR_NULL;
 
-	if(UartReady)
+	if(UartInst.UartReady)
 	{
-		UartDrv_Write(&huart2, msg, len);
-		UartReady = RESET;
-		NewDataReady = RESET;
+		UartDrv_Write(&UartInst.huart, msg, len);
+		UartInst.UartReady = RESET;
+		UartInst.NewDataReady = RESET;
 	}
 
 
@@ -89,8 +86,8 @@ ERROR_T ulUart_ReadMessage(char* msg, uint16_t len)
 	if(NULL == msg)
 		error_status = ERROR_NULL;
 
-	if(RESET == UartDrv_Read(&huart2, (uint8_t*)msg, len))
-		error_status = ERROR_EMPTYMSG;
+	if(ERROR_UART == UartDrv_Read(&UartInst.huart, (uint8_t*)msg, len))
+		error_status = ERROR_UART;
 
 	return error_status;
 }
@@ -111,7 +108,7 @@ static BOOL ulUart_ParseMsg(void)
 	if(rescmp == RESET)
 	{
 		i = cmdlen;
-		if(RESET !=(message.num = atoi((char*)&rxBuffer[i])))
+		if(RESET !=(UartInst.message.num = atoi((char*)&rxBuffer[i])))
 			status = SET;
 	}
 
@@ -122,11 +119,11 @@ static BOOL ulUart_ParseMsg(void)
 BOOL ulUart_NewPeriodDetected(void)
 {
 	BOOL status = RESET;
-	if(NewPeriodReady)
-		if(message.num >= MIN_PERIOD && message.num <= MAX_PERIOD)
+	if(UartInst.NewPeriodReady)
+		if(UartInst.message.num >= MIN_PERIOD && UartInst.message.num <= MAX_PERIOD)
 		{
 			status = SET;
-			NewPeriodReady = RESET;
+			UartInst.NewPeriodReady = RESET;
 		}
 
 	return status;
@@ -134,20 +131,20 @@ BOOL ulUart_NewPeriodDetected(void)
 
 uint16_t ulUart_ReadPeriod(void)
 {
-	return message.num;
+	return UartInst.message.num;
 }
 
 
 ERROR_T ulUart_Run()
 {
-	if(SET == UartReady)
+	if(SET == UartInst.UartReady)
 	{
-		if(SET == NewDataReady)
+		if(SET == UartInst.NewDataReady)
 		{
 			if(ulUart_ParseMsg())
 			{
-				NewDataReady = RESET;
-				NewPeriodReady = SET;
+				UartInst.NewDataReady = RESET;
+				UartInst.NewPeriodReady = SET;
 			}
 		}
 		ulUart_ReadMessage(rxBuffer, (uint16_t)MAXLENRX);
@@ -165,3 +162,12 @@ ERROR_T ulUart_Stop(void)
 	return ERROR_SUCCESS;
 }
 
+ERROR_T ulUart_IRQHandler(void)
+{
+	ERROR_T status = ERROR_SUCCESS;
+
+	if(ERROR_SUCCESS != UartDrv_IRQHandler(&UartInst.huart))
+		status = ERROR_UART;
+
+	return status;
+}
