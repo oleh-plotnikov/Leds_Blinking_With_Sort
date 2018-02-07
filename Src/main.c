@@ -16,7 +16,7 @@ int main(void)
 	uint16_t period;
 
 	Periphery_Init();
-	ulUart_SendMessage("\nProgram run\n\r", 14);
+	ulUart_SendMessage("\nPROGRAM RUN\n\r");
 
 
   while (1)
@@ -29,11 +29,13 @@ int main(void)
 
 	  if(ulButton_NewPeriodDetected())
 	  {
+		  ulUart_SendMessage("LED PERIOD CHANHED BY BUTTON\n\r");
 		  period = ulButton_ReadPeriod();
 		  ulLedCtrl_SetPeriod(period);
 	  }
 	  if(ulUart_NewPeriodDetected())
 	  {
+		  ulUart_SendMessage("LED PERIOD CHANHED BY UART COMMAND\n\r");
 		  period = ulUart_ReadPeriod();
   		  ulLedCtrl_SetPeriod(period);
 	  }

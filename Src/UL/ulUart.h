@@ -17,7 +17,7 @@
 
 ERROR_T ulUart_Init();
 ERROR_T ulUart_Run();
-ERROR_T ulUart_SendMessage(char* msg, uint16_t len);
+ERROR_T ulUart_SendMessage(char* msg);
 ERROR_T ulUart_ReadMessage(char* msg, uint16_t len);
 BOOL ulUart_NewPeriodDetected(void);
 uint16_t ulUart_ReadPeriod(void);

@@ -59,9 +59,10 @@ ERROR_T ulUart_Init()
 }
 
 
-ERROR_T ulUart_SendMessage(char* msg, uint16_t len)
+ERROR_T ulUart_SendMessage(char* msg)
 {
 	ERROR_T error_status = ERROR_SUCCESS;
+	uint8_t len = strlen(msg);
 
 	if(NULL == msg)
 		error_status = ERROR_NULL;
@@ -120,11 +121,22 @@ BOOL ulUart_NewPeriodDetected(void)
 {
 	BOOL status = RESET;
 	if(UartInst.NewPeriodReady)
-		if(UartInst.message.num >= MIN_PERIOD && UartInst.message.num <= MAX_PERIOD)
+	{
+		if(UartInst.message.num < MIN_PERIOD)
+		{
+			ulUart_SendMessage("LED PERIOD IS TOO SMALL!!!\n");
+		}
+		else if(UartInst.message.num >= MAX_PERIOD)
+		{
+			ulUart_SendMessage("LED PERIOD IS TOO BIG!!!\n");
+		}
+		else
 		{
 			status = SET;
-			UartInst.NewPeriodReady = RESET;
 		}
+
+		UartInst.NewPeriodReady = RESET;
+	}
 
 	return status;
 }
@@ -145,6 +157,10 @@ ERROR_T ulUart_Run()
 			{
 				UartInst.NewDataReady = RESET;
 				UartInst.NewPeriodReady = SET;
+			}
+			else
+			{
+				ulUart_SendMessage("WRONG COMMAND!!!\n");
 			}
 		}
 		ulUart_ReadMessage(rxBuffer, (uint16_t)MAXLENRX);
